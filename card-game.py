@@ -37,9 +37,9 @@ Player = Enum('Player', ['MAX', 'MIN'])
 # return move
 
 def minimax_search() -> tuple:
-    state = [1, 2, 3]
+    state = [1, 2, 3, 4]
     value, move = max_value(state)
-    print("Value: %d, Move: %s", value, move)
+    print("Value: {0}, Move: {1}".format(value, move))
     return move
 
 
@@ -69,9 +69,9 @@ def max_value(state) -> tuple[int, tuple]:
     
     for row, no_of_cards in enumerate(state):
         for i in range(1, no_of_cards + 1):
-            v2, _ = min_value(result(state, row, i))
+            (v2, _) = min_value(result(state, row, i))
             if v2 > v:
-                v = v2, 
+                v = v2
                 move = (row, i)
     return v, move
 
