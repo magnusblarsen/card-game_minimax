@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from enum import Enum
+import math
 
 
 # function MINIMAX-SEARCH(state) returns an action
@@ -31,19 +32,19 @@ from enum import Enum
 # TODO: persist state for each move
 
 # Always ordered. 
-# State[0] is first row and so on, and number indicates number of cards in that row.
 Player = Enum('Player', ['MAX', 'MIN'])
 
 def print_state(state):
     to_print = ""
-    for i, no_of_cards in enumerate(state):
-        for j in range(1, no_of_cards + 1):
+    for _, no_of_cards in enumerate(state):
+        for _ in range(1, no_of_cards + 1):
             to_print += "O "
         to_print += "\n"
     print(to_print)
 
 def play_game():
-    state = [1, 2, 3, 4, 5]
+    
+    state = [1, 2, 3, 4]
     turn = Player.MAX
     print_state(state)
     while not is_terminal(state):
@@ -55,6 +56,7 @@ def play_game():
     who_won = "Max" if utility(turn) == 1 else "Min"
     print("Game Over... {0} won!".format(who_won))
 
+# State[0] is first row and so on, and number indicates number of cards in that row.
 def minimax_search(state) -> tuple:
     value, move = max_value(state)
     print("Value: {0}, Move: {1}".format(value, move))
@@ -65,8 +67,7 @@ def is_terminal(state: list) -> bool:
     state = [x for x in state if x > 0]
     state.sort()
 
-    if not state:
-        return True
+    return True if not state else False
 
 def utility(player: Player) -> int:
     if player == Player.MAX:
@@ -83,11 +84,14 @@ def result(state, row, take_amount):
     return new_state
 
 # move : (int, int) (index, no_of_cards)
-def max_value(state) -> tuple[int, tuple]:
+def max_value(state) -> tuple[int|float, tuple]:
     if is_terminal(state):
-        return utility(Player.MAX), None
-    v = float('-inf')
-    
+        return utility(Player.MAX), ()
+
+    v = -math.inf
+
+    move = ()
+
     for row, no_of_cards in enumerate(state):
         for i in range(1, no_of_cards + 1):
             (v2, _) = min_value(result(state, row, i))
@@ -96,10 +100,11 @@ def max_value(state) -> tuple[int, tuple]:
                 move = (row, i)
     return v, move
 
-def min_value(state) -> tuple[int, tuple]:
+def min_value(state) -> tuple[int|float, tuple]:
     if is_terminal(state):
-        return utility(Player.MIN), None
-    v = float('inf')
+        return utility(Player.MIN), ()
+    v = math.inf
+    move = ()
 
     for row, no_of_cards in enumerate(state):
         for i in range(1, no_of_cards + 1):
