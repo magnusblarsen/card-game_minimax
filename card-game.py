@@ -27,24 +27,45 @@ from enum import Enum
 # 			v,move ← v2,a
 # 	return v,move
 
+# TODO: implement alpha-beta pruning 
+# TODO: persist state for each move
 
 # Always ordered. 
 # State[0] is first row and so on, and number indicates number of cards in that row.
 Player = Enum('Player', ['MAX', 'MIN'])
 
-# function MINIMAX-SEARCH(state) returns an action
-# 	value, move ← MAX-VALUE(state)
-# return move
+def print_state(state):
+    to_print = ""
+    for i, no_of_cards in enumerate(state):
+        for j in range(1, no_of_cards + 1):
+            to_print += "O "
+        to_print += "\n"
+    print(to_print)
 
-def minimax_search() -> tuple:
-    state = [1, 2, 3, 4]
+def play_game():
+    state = [1, 2, 3, 4, 5]
+    turn = Player.MAX
+    print_state(state)
+    while not is_terminal(state):
+        move = minimax_search(state)
+        state = result(state, move[0], move[1])
+        print_state(state)
+        turn = Player.MAX if turn == Player.MIN else Player.MIN
+
+    who_won = "Max" if utility(turn) == 1 else "Min"
+    print("Game Over... {0} won!".format(who_won))
+
+def minimax_search(state) -> tuple:
     value, move = max_value(state)
     print("Value: {0}, Move: {1}".format(value, move))
     return move
 
 
 def is_terminal(state: list) -> bool:
-    if state[0] == 0:
+    state = [x for x in state if x > 0]
+    state.sort()
+
+    if not state:
         return True
 
 def utility(player: Player) -> int:
@@ -88,4 +109,4 @@ def min_value(state) -> tuple[int, tuple]:
                 move = (row, i)
     return v, move
 
-minimax_search()
+play_game()
