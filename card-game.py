@@ -3,35 +3,6 @@
 from enum import Enum
 import math
 
-
-# function MINIMAX-SEARCH(state) returns an action
-# 	value, move ← MAX-VALUE(state)
-# return move
-
-# function MAX-VALUE(state) returns (utility,move)
-# 	if IS-TERMINAL(state) then
-# 		return UTILITY(state,MAX), null
-# 	v ← -∞
-# 	for each a in ACTIONS(state) do
-# 		v2,a2 ← MIN-VALUE(RESULT(state,a))
-# 		if v2 > v then
-# 			v,move ← v2,a
-# 	return v,move
-
-# function MIN-VALUE(state) returns (utility,move)
-# 	if IS-TERMINAL(state) then
-# 		return UTILITY(state,MAX), null
-# 	v ← +∞
-# 	for each a in ACTIONS(state) do
-# 		v2,a2 ← MAX-VALUE(RESULT(state,a))
-# 		if v2 < v then
-# 			v,move ← v2,a
-# 	return v,move
-
-# TODO: implement alpha-beta pruning 
-# TODO: persist state for each move
-
-# Always ordered. 
 Player = Enum('Player', ['MAX', 'MIN'])
 
 def print_state(state):
@@ -83,7 +54,6 @@ def result(state, row, take_amount):
         exit(1)
     return new_state
 
-# move : (int, int) (index, no_of_cards)
 def max_value(state, alpha, beta) -> tuple[int|float, tuple]:
     if is_terminal(state):
         return utility(Player.MAX), ()
