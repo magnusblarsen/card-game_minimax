@@ -58,7 +58,7 @@ def play_game():
 
 # State[0] is first row and so on, and number indicates number of cards in that row.
 def minimax_search(state) -> tuple:
-    value, move = max_value(state)
+    value, move = max_value(state, -math.inf, math.inf)
     print("Value: {0}, Move: {1}".format(value, move))
     return move
 
@@ -84,7 +84,7 @@ def result(state, row, take_amount):
     return new_state
 
 # move : (int, int) (index, no_of_cards)
-def max_value(state) -> tuple[int|float, tuple]:
+def max_value(state, alpha, beta) -> tuple[int|float, tuple]:
     if is_terminal(state):
         return utility(Player.MAX), ()
 
@@ -94,13 +94,16 @@ def max_value(state) -> tuple[int|float, tuple]:
 
     for row, no_of_cards in enumerate(state):
         for i in range(1, no_of_cards + 1):
-            (v2, _) = min_value(result(state, row, i))
+            (v2, _) = min_value(result(state, row, i), alpha, beta)
             if v2 > v:
                 v = v2
                 move = (row, i)
+                alpha = max(alpha, v)
+            if v >= beta:
+                return v, move
     return v, move
 
-def min_value(state) -> tuple[int|float, tuple]:
+def min_value(state, alpha, beta) -> tuple[int|float, tuple]:
     if is_terminal(state):
         return utility(Player.MIN), ()
     v = math.inf
@@ -108,10 +111,13 @@ def min_value(state) -> tuple[int|float, tuple]:
 
     for row, no_of_cards in enumerate(state):
         for i in range(1, no_of_cards + 1):
-            v2, _ = max_value(result(state, row, i))
+            v2, _ = max_value(result(state, row, i), alpha, beta)
             if v2 < v:
                 v = v2
                 move = (row, i)
+                beta = max(beta, v)
+            if v <= alpha:
+                return v, move
     return v, move
 
 play_game()
